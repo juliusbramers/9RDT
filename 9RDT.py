@@ -24,22 +24,47 @@ def on_part_select(event):
 root = tk.Tk()
 root.title('Circular Economy - Strategy Desicion Tool')
 
+# Globale Schriftgröße festlegen
+root.option_add('*Font', 'Helvetica 22')
+
+# Hintergrundfarbe festlegen
+root.configure(bg='#1B9783')
+
+# Globale Hintergrundfarbe festlegen
+root.option_add('*Background', 'grey') 
+
+# Fenstergröße und Position
+window_width = 500
+window_height = 500
+
+# Bildschirmbreite und -höhe ermitteln
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+
+# Position für das Fenster berechnen
+position_top = int(screen_height / 2 - window_height / 2)
+position_right = int(screen_width / 2 - window_width / 2)
+
+# Fenstergröße und Position festlegen
+root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+
+
 # Produktauswahl
-product_label = ttk.Label(root, text="Select Product:")
+product_label = tk.Label(root, text="Select Product:", font=("Helvetica", 16), bg='#1B9783')
 product_label.pack()
 product_combobox = ttk.Combobox(root, values=list(products.keys()))
 product_combobox.pack()
 product_combobox.bind('<<ComboboxSelected>>', on_product_select)
 
 # Teileauswahl
-part_label = ttk.Label(root, text="Select Part:")
+part_label = tk.Label(root, text="Select Part:", font=("Helvetica", 16), bg='#1B9783')
 part_label.pack()
 parts_combobox = ttk.Combobox(root)
 parts_combobox.pack()
 parts_combobox.bind('<<ComboboxSelected>>', on_part_select)
 
 # Zustandsauswahl
-state_label = ttk.Label(root, text="Select State:")
+state_label = tk.Label(root, text="Select State:", font=("Helvetica", 16), bg='#1B9783')
 state_label.pack()
 state_combobox = ttk.Combobox(root, values=states)
 state_combobox.pack()
