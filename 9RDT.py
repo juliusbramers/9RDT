@@ -1,37 +1,29 @@
 import tkinter as tk
 from tkinter import ttk
-
-# Daten für die Demo
-products = {
-    'Product 1': ['Part 1', 'Part 2', 'Part 3'],
-    'Product 2': ['Part 1', 'Part 4'],
-    'Product 3': ['Part 5', 'Part 2']
-}
-states = ['State 1', 'State 2', 'State 3']
+from product_data import products  # Importieren Sie die Daten aus der product_data.py Datei
 
 def on_product_select(event):
     # Partliste für das ausgewählte Produkt aktualisieren
-    product = product_combobox.get()
-    parts_combobox['values'] = products[product]
-    parts_combobox.current(0)
-    on_part_select(None)
+    product_id = product_combobox.get()
+    product = next((p for p in products if p.id == product_id), None)
+    if product:
+        parts_combobox['values'] = product.bill_of_product
+        parts_combobox.current(0)
+        on_part_select(None)
 
 def on_part_select(event):
     # Zustandsliste aktualisieren
-    state_combobox['values'] = states
-    state_combobox.current(0)
+    product_id = product_combobox.get()
+    product = next((p for p in products if p.id == product_id), None)
+    if product:
+        state_combobox['values'] = product.bill_of_states
+        state_combobox.current(0)
 
 root = tk.Tk()
 root.title('Circular Economy - Strategy Desicion Tool')
 
 # Globale Schriftgröße festlegen
 root.option_add('*Font', 'Helvetica 22')
-
-# Hintergrundfarbe festlegen
-root.configure(bg='#1B9783')
-
-# Globale Hintergrundfarbe festlegen
-root.option_add('*Background', 'grey') 
 
 # Fenstergröße und Position
 window_width = 500
@@ -48,26 +40,24 @@ position_right = int(screen_width / 2 - window_width / 2)
 # Fenstergröße und Position festlegen
 root.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
-
 # Produktauswahl
-product_label = tk.Label(root, text="Select Product:", font=("Helvetica", 16), bg='#1B9783')
+product_label = ttk.Label(root, text="Select Product:")
 product_label.pack()
-product_combobox = ttk.Combobox(root, values=list(products.keys()))
-product_combobox.pack()
+product_combobox = ttk.Combobox(root, values=[p.id for p in products])
 product_combobox.bind('<<ComboboxSelected>>', on_product_select)
+product_combobox.pack()
 
 # Teileauswahl
-part_label = tk.Label(root, text="Select Part:", font=("Helvetica", 16), bg='#1B9783')
-part_label.pack()
+parts_label = ttk.Label(root, text="Select Part:")
+parts_label.pack()
 parts_combobox = ttk.Combobox(root)
-parts_combobox.pack()
 parts_combobox.bind('<<ComboboxSelected>>', on_part_select)
+parts_combobox.pack()
 
 # Zustandsauswahl
-state_label = tk.Label(root, text="Select State:", font=("Helvetica", 16), bg='#1B9783')
+state_label = ttk.Label(root, text="Select State:")
 state_label.pack()
-state_combobox = ttk.Combobox(root, values=states)
+state_combobox = ttk.Combobox(root)
 state_combobox.pack()
 
-# Fenster starten
 root.mainloop()
