@@ -57,7 +57,7 @@ products = [
         ],
         bill_of_states=["State 1", "State 2", "State 3"]
     ),
-    # Das neue Produkt hier hinzufügen
+
     Product(
         id="Product2",
         id_short="P2",
@@ -88,4 +88,35 @@ products = [
         bill_of_states=["State 4", "State 5", "State 6"]
     ),
     # Weitere Produkte hier hinzufügen...
+
+    #Aus Verständnisgründen wurde die Namensgebung der ersten Verschachtelungsebene zu "Part" geändert - ist aber exakt das gleiche wie bei den Produkten
+    Product(
+        id="Part 1",
+        id_short="Pa1",
+        description="This is Part 1, which product 1 is made of",
+        bill_of_product=[],
+        bill_of_emissions=[
+            Emission(
+                id="Emission4",
+                id_short="E4",
+                category="Category4",
+                scope=1,
+                total_c02_equivalent=42,
+                measuring_unit="kg",
+                standards_country_code="DE",
+                emissions_data_sheet_file_URL="https://youtu.be/xvFZjo5PgG0?si=ds_vYnnTLCysGrmY"
+            ),
+            Emission(
+                id="Emission5",
+                id_short="E5",
+                category="Category5",
+                scope=2,
+                total_c02_equivalent=69,
+                measuring_unit="kg",
+                standards_country_code="DE",
+                emissions_data_sheet_file_URL="http://example.com/emission5.pdf"
+            )
+        ],
+        bill_of_states=["State 1", "State 3", "State 4"]
+    ),
 ]
