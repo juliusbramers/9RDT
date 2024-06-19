@@ -3,7 +3,7 @@ from tkinter import ttk
 from product_data import products  # Importieren Sie die Daten aus der product_data.py Datei
 from strategies import RStrategy, r_strategies  # Importieren Sie die RStrategy Klasse und die r_strategies Liste aus der strategies.py Datei
 
-#Erstes Dropdownmenü
+# Erstes Dropdownmenü
 def on_product_select(event):
     selected_product_id = product_combobox.get()
     selected_product = next(p for p in products if p.id == selected_product_id)
@@ -26,32 +26,72 @@ def on_product_select(event):
         state_combobox['values'] = selected_product.bill_of_states
         state_combobox.set(selected_product.bill_of_states[0] if selected_product.bill_of_states else "Product not found")
 
-#Zweites Dropdownmenü
+# Zweites Dropdownmenü
 def on_part_select(event):
     selected_part_id = parts_combobox.get()
-    
+
     if selected_part_id == "Show for all":
-        # Wenn "Show for all" ausgewählt ist, zeigen Sie die Stati des ausgewählten Produkts an
-        selected_product_id = product_combobox.get()
-        selected_product = next(p for p in products if p.id == selected_product_id)
-        state_combobox['values'] = selected_product.bill_of_states
-        state_combobox.set(selected_product.bill_of_states[0] if selected_product.bill_of_states else "Product not found")
-    else:
-        # Ansonsten zeigen Sie die Stati des ausgewählten Teils an
-        selected_part = next((p for p in products if p.id == selected_part_id), None)
-        
-        if selected_part:
-            state_combobox['values'] = selected_part.bill_of_states
-            state_combobox.set(selected_part.bill_of_states[0] if selected_part.bill_of_states else "Product not found")
+        # Suche alle Produkte, die das ausgewählte Teil enthalten
+        products_with_part = [p for p in products if any(part.id == selected_part_id for part in p.bill_of_products)]
+        # Kombiniere alle Emissionen der gefundenen Produkte
+        combined_emissions = [e for product in products_with_part for e in product.bill_of_emissions]
+        if combined_emissions:
+            emissions_combobox['values'] = [e.id for e in combined_emissions]
+            emissions_combobox.set(combined_emissions[0].id)
         else:
-            # Wenn das Teil nicht gefunden wird, "Status not found" anzeigen
-            state_combobox['values'] = ["Status not found"]
-            state_combobox.set("Status not found")  # Setzen Sie den Text der Combobox auf "Status not found"
+            emissions_combobox['values'] = ["No Emission found!"]
+            emissions_combobox.set("No Emission found!")
+    else:
+        # Suche das Produkt, das das ausgewählte Teil enthält
+        product_with_part = next((p for p in products if any(part.id == selected_part_id for part in p.bill_of_products)), None)
+        if product_with_part:
+            # Finde das ausgewählte Teil im Produkt
+            selected_part = next((part for part in product_with_part.bill_of_products if part.id == selected_part_id), None)
+            if selected_part and selected_part.bill_of_emissions:
+                # Emissionen des ausgewählten Teils anzeigen
+                emissions_combobox['values'] = [e.id for e in selected_part.bill_of_emissions]
+                emissions_combobox.set(selected_part.bill_of_emissions[0].id)
+            else:
+                # Keine Emissionen gefunden
+                emissions_combobox['values'] = ["No Emission found!"]
+                emissions_combobox.set("No Emission found!")
+        else:
+            emissions_combobox['values'] = ["No Emission found!"]
+            emissions_combobox.set("No Emission found!")
+
+    on_emission_select(None)  # Aktualisiere die Anzeige der Emissionsdaten basierend auf der neuen Auswahl
 
 # Globale Variable für die Strategie-Labels
 strategy_labels = []
 
-#Drittes Dropdownmenü
+# Neue Funktion für die Auswahl von Emissionsdaten
+def on_emission_select(event):
+    selected_emission_id = emissions_combobox.get()
+    selected_product_id = product_combobox.get()
+    selected_product = next(p for p in products if p.id == selected_product_id)
+    selected_emission = next(e for e in selected_product.bill_of_emissions if e.id == selected_emission_id)
+    
+    # Aktualisieren Sie das Label mit den Details der ausgewählten Emissionsdaten
+    emissions_data_label.config(text=f"ID: {selected_emission.id}\n"
+                                     f"Short ID: {selected_emission.id_short}\n"
+                                     f"Category: {selected_emission.category}\n"
+                                     f"Scope: {selected_emission.scope}\n"
+                                     f"Total CO2 Equivalent: {selected_emission.total_c02_equivalent} {selected_emission.measuring_unit}\n"
+                                     f"Standards Country Code: {selected_emission.standards_country_code}\n"
+                                     f"Emissions Data Sheet: {selected_emission.emissions_data_sheet_file_URL}")
+
+# Änderungen in `on_part_select` um die Emissionsdaten-Combobox zu aktualisieren
+def on_part_select(event):
+    selected_product_id = product_combobox.get()
+    selected_product = next(p for p in products if p.id == selected_product_id)
+    emissions_combobox['values'] = [e.id for e in selected_product.bill_of_emissions]
+    emissions_combobox.set(selected_product.bill_of_emissions[0].id if selected_product.bill_of_emissions else "Emissions not found")
+    on_emission_select(None)  # Aktualisieren Sie das Emissionsdaten-Label
+
+# Globale Variable für das Emissionsdaten-Label
+emissions_data_label = None
+
+# Drittes Dropdownmenü
 def on_state_select(event):
     global strategy_labels
 
@@ -111,6 +151,16 @@ parts_label.pack()
 parts_combobox = ttk.Combobox(root)
 parts_combobox.bind('<<ComboboxSelected>>', on_part_select)
 parts_combobox.pack()
+
+# Emissionsdaten-Combobox und Label hinzufügen
+emissions_label = ttk.Label(root, text="Select Emissions Data:")
+emissions_label.pack()
+emissions_combobox = ttk.Combobox(root)
+emissions_combobox.bind('<<ComboboxSelected>>', on_emission_select)
+emissions_combobox.pack()
+
+emissions_data_label = ttk.Label(root, text="Emissions Details:")
+emissions_data_label.pack()
 
 # Zustandsauswahl
 state_label = ttk.Label(root, text="Select State:")

@@ -1,10 +1,6 @@
 from typing import Optional, List
 from dataclasses import dataclass
 
-'''Die erstellten Produkte orientieren sich grob an der Struktur in dem Digitalen Produktpasst aus der Bachelorarbeit.
-Aufgrund der Komplexität des Produktpasses, wurden die Produkte auf die wichtigsten Informationen reduziert.'''
-
-# Emissionsklasse definieren
 @dataclass
 class Emission:
     id: str
@@ -16,23 +12,21 @@ class Emission:
     standards_country_code: str
     emissions_data_sheet_file_URL: str
 
-# Produktklasse definieren
 @dataclass
 class Product:
     id: str
     id_short: str
     description: str
     bill_of_product: List[str]
-    bill_of_emissions: List[Emission] 
+    bill_of_emissions: List[Emission]
     bill_of_states: List[str]
 
-# Produkte definieren - Hier können auch direkt die Emissionen definiert werden
 products = [
     Product(
         id="Product1",
         id_short="P1",
         description="This is product 1",
-        bill_of_product=["Part 1", "Part 2", "Part 3"],
+        bill_of_product=["Part1", "Part2", "Part3"],
         bill_of_emissions=[
             Emission(
                 id="Emission1",
@@ -57,12 +51,11 @@ products = [
         ],
         bill_of_states=["State 1", "State 2", "State 3"]
     ),
-
     Product(
         id="Product2",
         id_short="P2",
         description="This is product 2",
-        bill_of_product=["Part 4", "Part 5", "Part 6"],
+        bill_of_product=["Part4", "Part5", "Part6"],
         bill_of_emissions=[
             Emission(
                 id="Emission3",
@@ -87,11 +80,8 @@ products = [
         ],
         bill_of_states=["State 4", "State 5", "State 6"]
     ),
-    # Weitere Produkte hier hinzufügen...
-
-    #Aus Verständnisgründen wurde die Namensgebung der ersten Verschachtelungsebene zu "Part" geändert - ist aber exakt das gleiche wie bei den Produkten
     Product(
-        id="Part 1",
+        id="Part1",
         id_short="Pa1",
         description="This is Part 1, which product 1 is made of",
         bill_of_product=[],
