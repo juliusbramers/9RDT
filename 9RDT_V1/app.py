@@ -42,7 +42,7 @@ class ProductApp(tk.Tk):
         self.emissions_label = None
         self.states_menu = None
         self.rstrategy_label = None
-        self.no_data_label = None  # Hinzugefügt für "No Data found!" Nachricht
+        self.no_data_label = None
 
         ttk.Label(self, text="Select Product:").pack(pady=(20, 10))
         self.initial_menu = ttk.Combobox(self, state="readonly", font=('Arial', 18))
@@ -89,7 +89,7 @@ class ProductApp(tk.Tk):
 
         if product.bill_of_emissions:
             emissions_text = "\n\n".join([
-                f"{e.id_short}:\nCategory: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nInfo: {e.emissions_data_sheet_file_URL}"
+                f"ID: {e.id}\nCategory: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nInfo: {e.emissions_data_sheet_file_URL}"
                 for e in product.bill_of_emissions])
         
         else:
