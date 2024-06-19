@@ -26,7 +26,7 @@ product1 = Product(
     id="Product1",
     id_short="P1",
     description="This is product 1",
-    bill_of_product=["Product3", "Product4", "Product5"],
+    bill_of_product=["Product2", "Product3", "Product5"],
     bill_of_emissions=[
         Emission(
             id="Emission1",
@@ -56,7 +56,7 @@ product2 = Product(
     id="Product2",
     id_short="P2",
     description="This is product 2",
-    bill_of_product=["Product3", "Product6", "Product7"],
+    bill_of_product=["Product3", "Product4", "Product7"],
     bill_of_emissions=[
         Emission(
             id="Emission3",
@@ -84,7 +84,7 @@ product2 = Product(
 
 product3 = Product(
     id="Product3",
-    id_short="Pa1",
+    id_short="Pa3",
     description="This is Product3, which product 1 is made of",
     bill_of_product=[],
     bill_of_emissions=[
@@ -112,8 +112,40 @@ product3 = Product(
     bill_of_states=["State 1", "State 3", "State 4"]
 )
 
+product4 = Product(
+    id="Product4",
+    id_short="Pa4",
+    description="This is Product4, which product 2 is made of",
+    bill_of_product=[],
+    bill_of_emissions=[
+        Emission(
+            id="Emission4",
+            id_short="E4",
+            category="Category4",
+            scope=1,
+            total_c02_equivalent=42,
+            measuring_unit="kg",
+            standards_country_code="DE",
+            emissions_data_sheet_file_URL="https://youtu.be/xvFZjo5PgG0?si=ds_vYnnTLCysGrmY"
+        ),
+        Emission(
+            id="Emission5",
+            id_short="E5",
+            category="Category5",
+            scope=2,
+            total_c02_equivalent=69,
+            measuring_unit="kg",
+            standards_country_code="DE",
+            emissions_data_sheet_file_URL="http://example.com/emission5.pdf"
+        )
+    ],
+    bill_of_states=["State 1", "State 9"]
+)
+
+#Hier müssen die Produkte eingetragen werden
 products = {
     "Product1": product1,
     "Product2": product2,
     "Product3": product3,
+    "Product4": product4
 }

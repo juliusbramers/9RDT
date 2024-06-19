@@ -7,9 +7,23 @@ class ProductApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('Product Selector')
-        self.geometry('500x500+300+100')
-        self.resizable(True, True)
 
+        # Fenstergröße
+        window_width = 700
+        window_height = 500
+
+        # Bildschirmauflösung abfragen
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Startposition berechnen
+        start_x = int((screen_width - window_width) / 2)
+        start_y = int((screen_height - window_height) / 2)
+
+        # Fensterposition und -größe einstellen
+        self.geometry(f'{window_width}x{window_height}+{start_x}+{start_y}')
+
+        self.resizable(True, True)
         self.create_widgets()
 
     def create_widgets(self):
@@ -17,6 +31,7 @@ class ProductApp(tk.Tk):
         self.emissions_label = None
         self.states_menu = None
         self.rstrategy_label = None
+        self.no_data_label = None  # Hinzugefügt für "No Data found!" Nachricht
 
         ttk.Label(self, text="Select Product:").pack(pady=(20, 10))
         self.initial_menu = ttk.Combobox(self, state="readonly")
@@ -33,6 +48,12 @@ class ProductApp(tk.Tk):
             self.display_no_data()
 
     def handle_selection(self, product_id, parent_frame):
+        # Bevor wir ein neues Dropdown-Menü hinzufügen, entfernen wir alle nachfolgenden Dropdown-Menüs
+        current_frame_index = self.dropdown_frames.index(parent_frame) if parent_frame in self.dropdown_frames else -1
+        for frame in self.dropdown_frames[current_frame_index+1:]:
+            frame.destroy()
+            self.dropdown_frames.remove(frame)
+
         product = products.get(product_id, None)
         if product:
             if product.bill_of_product:
@@ -52,6 +73,11 @@ class ProductApp(tk.Tk):
             self.display_no_data()
 
     def display_emissions_and_states(self, product):
+        # Entfernen der "No Data found!" Nachricht, falls vorhanden
+        if self.no_data_label:
+            self.no_data_label.destroy()
+            self.no_data_label = None
+
         if product.bill_of_emissions:
             emissions_text = "\n".join([
                 f"{e.id_short}: {e.category}, Scope: {e.scope}, CO2 eq: {e.total_c02_equivalent}kg, Unit: {e.measuring_unit}, Standards: {e.standards_country_code}, URL: {e.emissions_data_sheet_file_URL}"
@@ -107,9 +133,16 @@ class ProductApp(tk.Tk):
             self.states_menu.destroy()
         if self.rstrategy_label:
             self.rstrategy_label.destroy()
+        if self.no_data_label:  # Entfernen der "No Data found!" Nachricht, falls vorhanden
+            self.no_data_label.destroy()
+            self.no_data_label = None
 
     def display_no_data(self):
-        ttk.Label(self, text="No Data found!").pack(pady=(10, 0))
+        # Entfernen aller dynamischen Widgets vor der Anzeige der Nachricht
+        self.clear_dynamic_widgets()
+        if not self.no_data_label:
+            self.no_data_label = ttk.Label(self, text="No Data found!")
+            self.no_data_label.pack(pady=(10, 0))
 
 if __name__ == "__main__":
     app = ProductApp()
