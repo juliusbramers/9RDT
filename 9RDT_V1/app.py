@@ -12,7 +12,7 @@ class ProductApp(tk.Tk):
         style = ttk.Style(self)
         
         # Globalen Stil für alle Widgets setzen
-        font = ('Arial', 18)
+        font = ('Helvetica', 18)
         style.configure('.', font=font)
         style.configure('TCombobox', font=font)  # Schriftart für Combobox setzen
         
@@ -20,8 +20,8 @@ class ProductApp(tk.Tk):
         self.option_add('*TCombobox*Listbox*Font', font)
 
         # Fenstergröße
-        window_width = 700
-        window_height = 500
+        window_width = 600
+        window_height = 800
 
         # Bildschirmauflösung abfragen
         screen_width = self.winfo_screenwidth()
@@ -51,7 +51,7 @@ class ProductApp(tk.Tk):
         self.update_dropdown(self.initial_menu, list(products.keys()))
 
     def handle_product_selection(self, event):
-        self.clear_dynamic_widgets()  # Reset everything when a new product is selected
+        self.clear_dynamic_widgets()
         product_id = event.widget.get()
         if product_id in products:
             self.handle_selection(product_id, self)
@@ -59,7 +59,6 @@ class ProductApp(tk.Tk):
             self.display_no_data()
 
     def handle_selection(self, product_id, parent_frame):
-        # Bevor wir ein neues Dropdown-Menü hinzufügen, entfernen wir alle nachfolgenden Dropdown-Menüs
         current_frame_index = self.dropdown_frames.index(parent_frame) if parent_frame in self.dropdown_frames else -1
         for frame in self.dropdown_frames[current_frame_index+1:]:
             frame.destroy()
@@ -84,14 +83,13 @@ class ProductApp(tk.Tk):
             self.display_no_data()
 
     def display_emissions_and_states(self, product):
-        # Entfernen der "No Data found!" Nachricht, falls vorhanden
         if self.no_data_label:
             self.no_data_label.destroy()
             self.no_data_label = None
 
         if product.bill_of_emissions:
             emissions_text = "\n\n".join([
-                f"{e.id_short}:\nKategorie: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nEinheit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nURL: {e.emissions_data_sheet_file_URL}"
+                f"{e.id_short}:\nCategory: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nInfo: {e.emissions_data_sheet_file_URL}"
                 for e in product.bill_of_emissions])
         
         else:
@@ -145,12 +143,11 @@ class ProductApp(tk.Tk):
             self.states_menu.destroy()
         if self.rstrategy_label:
             self.rstrategy_label.destroy()
-        if self.no_data_label:  # Entfernen der "No Data found!" Nachricht, falls vorhanden
+        if self.no_data_label:
             self.no_data_label.destroy()
             self.no_data_label = None
 
     def display_no_data(self):
-        # Entfernen aller dynamischen Widgets vor der Anzeige der Nachricht
         self.clear_dynamic_widgets()
         if not self.no_data_label:
             self.no_data_label = ttk.Label(self, text="No Data found! Please try again.")
