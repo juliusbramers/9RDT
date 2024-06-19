@@ -8,6 +8,17 @@ class ProductApp(tk.Tk):
         super().__init__()
         self.title('Product Selector')
 
+        # Stilobjekt erstellen
+        style = ttk.Style(self)
+        
+        # Globalen Stil für alle Widgets setzen
+        font = ('Arial', 18)
+        style.configure('.', font=font)
+        style.configure('TCombobox', font=font)  # Schriftart für Combobox setzen
+        
+        # Alternative Methode zur Anwendung der Schriftart auf alle Widgets
+        self.option_add('*TCombobox*Listbox*Font', font)
+
         # Fenstergröße
         window_width = 700
         window_height = 500
@@ -34,7 +45,7 @@ class ProductApp(tk.Tk):
         self.no_data_label = None  # Hinzugefügt für "No Data found!" Nachricht
 
         ttk.Label(self, text="Select Product:").pack(pady=(20, 10))
-        self.initial_menu = ttk.Combobox(self, state="readonly")
+        self.initial_menu = ttk.Combobox(self, state="readonly", font=('Arial', 18))
         self.initial_menu.pack()
         self.initial_menu.bind('<<ComboboxSelected>>', self.handle_product_selection)
         self.update_dropdown(self.initial_menu, list(products.keys()))
@@ -63,7 +74,7 @@ class ProductApp(tk.Tk):
                 label = ttk.Label(frame, text=f"Select component of {product.id_short}:")
                 label.pack()
 
-                dropdown = ttk.Combobox(frame, state="readonly")
+                dropdown = ttk.Combobox(frame, state="readonly", font=('Arial', 18))
                 dropdown.pack()
                 dropdown.bind('<<ComboboxSelected>>', lambda e: self.handle_selection(dropdown.get(), frame))
                 self.update_dropdown(dropdown, product.bill_of_product)
@@ -79,21 +90,22 @@ class ProductApp(tk.Tk):
             self.no_data_label = None
 
         if product.bill_of_emissions:
-            emissions_text = "\n".join([
-                f"{e.id_short}: {e.category}, Scope: {e.scope}, CO2 eq: {e.total_c02_equivalent}kg, Unit: {e.measuring_unit}, Standards: {e.standards_country_code}, URL: {e.emissions_data_sheet_file_URL}"
+            emissions_text = "\n\n".join([
+                f"{e.id_short}:\nKategorie: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nEinheit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nURL: {e.emissions_data_sheet_file_URL}"
                 for e in product.bill_of_emissions])
+        
         else:
             emissions_text = "No Emissions found!"
 
         if self.emissions_label:
             self.emissions_label.destroy()
-        self.emissions_label = ttk.Label(self, text="Emissions:\n" + emissions_text)
+        self.emissions_label = ttk.Label(self, text="Emissions:\n\n" + emissions_text)
         self.emissions_label.pack(pady=(10, 5))
 
         if product.bill_of_states:
             if self.states_menu:
                 self.states_menu.destroy()
-            self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly")
+            self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly", font=('Arial', 18))
             self.states_menu.pack()
             self.states_menu.bind('<<ComboboxSelected>>', self.handle_state_selection)
         else:
@@ -113,7 +125,7 @@ class ProductApp(tk.Tk):
         if strategies:
             strategy_text = "Possible R-Strategies: " + ", ".join(strategies)
         else:
-            strategy_text = "No R-Strategies found!"
+            strategy_text = "No R-Strategies found! Select another state."
         
         self.rstrategy_label = ttk.Label(self, text=strategy_text)
         self.rstrategy_label.pack(pady=(10, 0))
@@ -141,7 +153,7 @@ class ProductApp(tk.Tk):
         # Entfernen aller dynamischen Widgets vor der Anzeige der Nachricht
         self.clear_dynamic_widgets()
         if not self.no_data_label:
-            self.no_data_label = ttk.Label(self, text="No Data found!")
+            self.no_data_label = ttk.Label(self, text="No Data found! Please try again.")
             self.no_data_label.pack(pady=(10, 0))
 
 if __name__ == "__main__":
