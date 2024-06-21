@@ -142,6 +142,15 @@ product4 = Product(
     bill_of_states=["State 1", "State 9"]
 )
 
+Tesla_Model_3 = Product(
+    id="Tesla Model 3",
+    id_short="TM3",
+    description="This is the Tesla Model 3. It is a fully electric car made by Tesla corp.",
+    bill_of_product=["Battery", "Chassis", "Interior", "Exterior", "Wheels", "Electronics"],
+    bill_of_emissions=[],
+    bill_of_states=["State 1", "State 9"]
+)
+
 #Hier müssen die Produkte eingetragen werden
 products = {
     "Product1": product1,
