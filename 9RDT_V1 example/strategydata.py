@@ -9,53 +9,53 @@ class RStrategy:
 
 # Einzelne Recycling-Strategien als Instanzen
 r_strategy0 = RStrategy(
-    id="R0",
-    possible_states=["State 1", "State 2", "State 3"]
+    id="Refuse",
+    possible_states=["Product in concept stage, not yet produced"]
 )
 
 r_strategy1 = RStrategy(
-    id="R1",
-    possible_states=["State 4", "State 5", "State 6"]
+    id="Rethink",
+    possible_states=["Product in concept stage, not yet produced"]
 )
 
 r_strategy2 = RStrategy(
-    id="R2",
-    possible_states=["State 2"]
+    id="Reduce",
+    possible_states=["Product is in the manufacturing or design phase"]
 )
 
 r_strategy3 = RStrategy(
-    id="R3",
-    possible_states=["State 4", "State 5"]
+    id="Reuse",
+    possible_states=["Product is used and functional but no longer with the original owner"]
 )
 
 r_strategy4 = RStrategy(
-    id="R4",
-    possible_states=["State 3"]
+    id="Repair",
+    possible_states=["Product is damaged or partially non-functional"]
 )
 
 r_strategy5 = RStrategy(
-    id="R5",
-    possible_states=["State 1", "State 3", "State 4"]
+    id="Refurbish",
+    possible_states=["Product is outdated or shows signs of wear"]
 )
 
 r_strategy6 = RStrategy(
-    id="R6",
-    possible_states=["State 1"]
+    id="Remanufacture",
+    possible_states=["Product is at the end of its first life, but components are still usable"]
 )
 
 r_strategy7 = RStrategy(
-    id="R7",
-    possible_states=["State 2", "State 4"]
+    id="Repurpose",
+    possible_states=["Product can no longer be used in its original form"]
 )
 
 r_strategy8 = RStrategy(
-    id="R8",
-    possible_states=["State 1", "State 2", "State 6"]
+    id="Recycle",
+    possible_states=["Product is non-functional and cannot be repaired"]
 )
 
 r_strategy9 = RStrategy(
-    id="R9",
-    possible_states=["State 2", "State 5"]
+    id="Recover",
+    possible_states=["Product is at the end of its lifecycle and no longer usable"]
 )
 
 r_strategies = [r_strategy0, r_strategy1, r_strategy2, r_strategy3, r_strategy4, r_strategy5, r_strategy6, r_strategy7, r_strategy8, r_strategy9]

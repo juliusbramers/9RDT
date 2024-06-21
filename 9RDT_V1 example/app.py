@@ -103,7 +103,9 @@ class ProductApp(tk.Tk):
         if product.bill_of_states:
             if self.states_menu:
                 self.states_menu.destroy()
-            self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly", font=('Arial', 18))
+            # Label für die Zustandsauswahl hinzufügen
+            ttk.Label(self, text="Select current State of Product:").pack(pady=(10, 0))
+            self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly", font=('Arial', 18), width=50)
             self.states_menu.pack()
             self.states_menu.bind('<<ComboboxSelected>>', self.handle_state_selection)
         else:

@@ -26,7 +26,7 @@ product1 = Product(
     id="Product1",
     id_short="P1",
     description="This is product 1",
-    bill_of_product=["Product2", "Product3", "Product5"],
+    bill_of_product=["Product2LOL", "Product3", "Product5"],
     bill_of_emissions=[
         Emission(
             id="Emission1",
