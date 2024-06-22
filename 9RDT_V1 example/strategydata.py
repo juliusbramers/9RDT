@@ -50,7 +50,7 @@ r_strategy7 = RStrategy(
 
 r_strategy8 = RStrategy(
     id="Recycle",
-    possible_states=["Product is non-functional and cannot be repaired"]
+    possible_states=["Product is non-functional and cannot be repaired","Product is damaged or partially non-functional"]
 )
 
 r_strategy9 = RStrategy(

@@ -1,37 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
-from productdata import products  # Annahme: Import der Produktdaten
-from strategydata import r_strategies  # Annahme: Import der Strategiedaten
+from productdata import products
+from strategydata import r_strategies
 
 class ProductApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('R-Strategy Decision Tool')
 
-        # Stilobjekt erstellen
         style = ttk.Style(self)
-        
-        # Globalen Stil für alle Widgets setzen
         font = ('Helvetica', 18)
         style.configure('.', font=font)
-        style.configure('TCombobox', font=font)  # Schriftart für Combobox setzen
-        
-        # Alternative Methode zur Anwendung der Schriftart auf alle Widgets
+        style.configure('TCombobox', font=font)
         self.option_add('*TCombobox*Listbox*Font', font)
 
-        # Fenstergröße
         window_width = 600
         window_height = 700
-
-        # Bildschirmauflösung abfragen
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-
-        # Startposition berechnen
         start_x = int((screen_width - window_width) / 2)
         start_y = int((screen_height - window_height) / 2)
-
-        # Fensterposition und -größe einstellen
         self.geometry(f'{window_width}x{window_height}+{start_x}+{start_y}')
 
         self.resizable(True, True)
@@ -43,6 +31,8 @@ class ProductApp(tk.Tk):
         self.states_menu = None
         self.rstrategy_label = None
         self.no_data_label = None
+        self.new_emissions_label = None
+        self.last_selected_product_id = None  # Neues Attribut für die zuletzt ausgewählte Produkt-ID
 
         ttk.Label(self, text="Select Product:").pack(pady=(20, 10))
         self.initial_menu = ttk.Combobox(self, state="readonly", font=('Arial', 18))
@@ -53,12 +43,14 @@ class ProductApp(tk.Tk):
     def handle_product_selection(self, event):
         self.clear_dynamic_widgets()
         product_id = event.widget.get()
+        self.last_selected_product_id = product_id  # Aktualisieren der zuletzt ausgewählten Produkt-ID
         if product_id in products:
             self.handle_selection(product_id, self)
         else:
             self.display_no_data()
 
     def handle_selection(self, product_id, parent_frame):
+        self.product_id_last = product_id  # Aktualisieren der product_id_last mit der aktuellen Auswahl
         current_frame_index = self.dropdown_frames.index(parent_frame) if parent_frame in self.dropdown_frames else -1
         for frame in self.dropdown_frames[current_frame_index+1:]:
             frame.destroy()
@@ -70,7 +62,7 @@ class ProductApp(tk.Tk):
                 frame = ttk.Frame(parent_frame)
                 frame.pack(pady=10)
                 self.dropdown_frames.append(frame)
-                label = ttk.Label(frame, text=f"Select Component of {product_id}:")
+                label = ttk.Label(frame, text=f"Select Component of {product.id_short}:")
                 label.pack()
 
                 dropdown = ttk.Combobox(frame, state="readonly", font=('Arial', 18))
@@ -102,21 +94,13 @@ class ProductApp(tk.Tk):
         if product.bill_of_states:
             if self.states_menu:
                 self.states_menu.destroy()
-            # Label für die Zustandsauswahl hinzufügen
-            self.states_menu_label = ttk.Label(self, text="Select current State of Product:")
-            self.states_menu_label.pack(pady=(10, 0))
-            
+            ttk.Label(self, text="Select current State of Product:").pack(pady=(10, 0))
             self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly", font=('Arial', 18), width=50)
             self.states_menu.pack()
             self.states_menu.bind('<<ComboboxSelected>>', self.handle_state_selection)
         else:
             if self.states_menu:
                 self.states_menu.destroy()
-            if hasattr(self, 'states_menu_label'):
-                self.states_menu_label.destroy()
-                del self.states_menu_label
-            
-            # Zeige stattdessen eine Nachricht an
             ttk.Label(self, text="No States found!").pack()
 
     def handle_state_selection(self, event):
@@ -136,6 +120,28 @@ class ProductApp(tk.Tk):
         self.rstrategy_label = ttk.Label(self, text=strategy_text)
         self.rstrategy_label.pack(pady=(10, 0))
 
+        self.display_new_emissions(strategies)
+
+    def display_new_emissions(self, strategies):
+        if self.new_emissions_label:
+            self.new_emissions_label.destroy()
+
+        product_id = self.product_id_last  # Verwendung der zuletzt ausgewählten Produkt-ID
+        product = products.get(product_id, None)
+        if product and hasattr(product, 'bill_of_emissions_new_r'):
+            applicable_emissions = [e for e in product.bill_of_emissions_new_r if e.r_strategy in strategies]
+            if applicable_emissions:
+                new_emissions_text = "\n\n".join([
+                    f"ID: {e.id}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nR-Strategy: {e.r_strategy}\nEmissions Difference: {e.r_strategy_emissions_difference_percent}%\nCost Difference: {e.r_strategy_cost_difference_percent}%"
+                    for e in applicable_emissions])
+            else:
+                new_emissions_text = "No new emissions data found for selected R-Strategies."
+        else:
+            new_emissions_text = "No new emissions data available."
+
+        self.new_emissions_label = ttk.Label(self, text="New Emissions Data:\n\n" + new_emissions_text)
+        self.new_emissions_label.pack(pady=(10, 5))
+
     def update_dropdown(self, dropdown, values):
         dropdown['values'] = values
         if values:
@@ -151,12 +157,11 @@ class ProductApp(tk.Tk):
             self.states_menu.destroy()
         if self.rstrategy_label:
             self.rstrategy_label.destroy()
+        if self.new_emissions_label:
+            self.new_emissions_label.destroy()
         if self.no_data_label:
             self.no_data_label.destroy()
             self.no_data_label = None
-        if hasattr(self, 'states_menu_label'):
-            self.states_menu_label.destroy()
-            del self.states_menu_label
 
     def display_no_data(self):
         self.clear_dynamic_widgets()

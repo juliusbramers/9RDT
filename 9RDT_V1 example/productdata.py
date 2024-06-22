@@ -25,7 +25,7 @@ class EmissionNewR:
     measuring_unit: Optional[str]
     standards_country_code: Optional[str]
     emissions_data_sheet_file_URL: Optional[str]
-    r_strategy: RStrategy
+    r_strategy: Optional[str]
     r_strategy_emissions_difference_percent: Optional[int]
     r_strategy_cost_difference_percent: Optional[int]
 
@@ -116,7 +116,7 @@ Battery_Cells = Product(
             measuring_unit="kg",
             standards_country_code="DE",
             emissions_data_sheet_file_URL="https://www.iso.org/standard/71206.html",
-            r_strategy=r_strategy6,
+            r_strategy="Recycle",
             r_strategy_emissions_difference_percent=24,
             r_strategy_cost_difference_percent=13
         ),
@@ -130,7 +130,7 @@ Battery_Cells = Product(
             measuring_unit="kg",
             standards_country_code="DE",
             emissions_data_sheet_file_URL="https://www.iso.org/standard/71206.html",
-            r_strategy=r_strategy4,
+            r_strategy="Repair",
             r_strategy_emissions_difference_percent=83,
             r_strategy_cost_difference_percent=64
         )  
