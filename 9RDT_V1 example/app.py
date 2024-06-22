@@ -15,7 +15,7 @@ class ProductApp(tk.Tk):
         self.option_add('*TCombobox*Listbox*Font', font)
 
         window_width = 600
-        window_height = 700
+        window_height = 1000
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         start_x = int((screen_width - window_width) / 2)
@@ -88,7 +88,7 @@ class ProductApp(tk.Tk):
 
         if self.emissions_label:
             self.emissions_label.destroy()
-        self.emissions_label = ttk.Label(self, text="Emissions:\n\n" + emissions_text)
+        self.emissions_label = ttk.Label(self, text="Emissions of new Product:\n\n" + emissions_text)
         self.emissions_label.pack(pady=(10, 5))
 
         if product.bill_of_states:
@@ -132,7 +132,7 @@ class ProductApp(tk.Tk):
             applicable_emissions = [e for e in product.bill_of_emissions_new_r if e.r_strategy in strategies]
             if applicable_emissions:
                 new_emissions_text = "\n\n".join([
-                    f"ID: {e.id}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nR-Strategy: {e.r_strategy}\nEmissions Difference: {e.r_strategy_emissions_difference_percent}%\nCost Difference: {e.r_strategy_cost_difference_percent}%"
+                    f"R-Strategy: {e.r_strategy}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nEmissions Difference: {e.r_strategy_emissions_difference_percent}%\nCost Difference: {e.r_strategy_cost_difference_percent}%"
                     for e in applicable_emissions])
             else:
                 new_emissions_text = "No new emissions data found for selected R-Strategies."
