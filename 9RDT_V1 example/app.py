@@ -134,6 +134,10 @@ class ProductApp(tk.Tk):
                 new_emissions_text = "\n\n".join([
                     f"R-Strategy: {e.r_strategy}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nEmissions Difference: {e.r_strategy_emissions_difference_percent}%\nCost Difference: {e.r_strategy_cost_difference_percent}%"
                     for e in applicable_emissions])
+                # Finde die Strategie mit dem größten Wert in r_strategy_emissions_difference_percent
+                max_emission_strategy = max(applicable_emissions, key=lambda e: e.r_strategy_emissions_difference_percent)
+                strategy_advice = f"\n\nUse Strategy {max_emission_strategy.r_strategy} to minimize the Carbon Impact."
+                new_emissions_text += strategy_advice
             else:
                 new_emissions_text = "No new emissions data found for selected R-Strategies."
         else:
