@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from productdata import products
-from strategydata import r_strategies
+from productdata import products  # Annahme: Import der Produktdaten
+from strategydata import r_strategies  # Annahme: Import der Strategiedaten
 
 class ProductApp(tk.Tk):
     def __init__(self):
@@ -70,7 +70,7 @@ class ProductApp(tk.Tk):
                 frame = ttk.Frame(parent_frame)
                 frame.pack(pady=10)
                 self.dropdown_frames.append(frame)
-                label = ttk.Label(frame, text=f"Select Component of {product.id_short}:")
+                label = ttk.Label(frame, text=f"Select Component of {product_id}:")
                 label.pack()
 
                 dropdown = ttk.Combobox(frame, state="readonly", font=('Arial', 18))
@@ -91,7 +91,6 @@ class ProductApp(tk.Tk):
             emissions_text = "\n\n".join([
                 f"ID: {e.id}\nCategory: {e.category}\nScope: {e.scope}\nCO2 eq: {e.total_c02_equivalent}kg\nUnit: {e.measuring_unit}\nStandards: {e.standards_country_code}\nInfo: {e.emissions_data_sheet_file_URL}"
                 for e in product.bill_of_emissions])
-        
         else:
             emissions_text = "No Emissions found!"
 
@@ -104,13 +103,20 @@ class ProductApp(tk.Tk):
             if self.states_menu:
                 self.states_menu.destroy()
             # Label für die Zustandsauswahl hinzufügen
-            ttk.Label(self, text="Select current State of Product:").pack(pady=(10, 0))
+            self.states_menu_label = ttk.Label(self, text="Select current State of Product:")
+            self.states_menu_label.pack(pady=(10, 0))
+            
             self.states_menu = ttk.Combobox(self, values=product.bill_of_states, state="readonly", font=('Arial', 18), width=50)
             self.states_menu.pack()
             self.states_menu.bind('<<ComboboxSelected>>', self.handle_state_selection)
         else:
             if self.states_menu:
                 self.states_menu.destroy()
+            if hasattr(self, 'states_menu_label'):
+                self.states_menu_label.destroy()
+                del self.states_menu_label
+            
+            # Zeige stattdessen eine Nachricht an
             ttk.Label(self, text="No States found!").pack()
 
     def handle_state_selection(self, event):
@@ -148,6 +154,9 @@ class ProductApp(tk.Tk):
         if self.no_data_label:
             self.no_data_label.destroy()
             self.no_data_label = None
+        if hasattr(self, 'states_menu_label'):
+            self.states_menu_label.destroy()
+            del self.states_menu_label
 
     def display_no_data(self):
         self.clear_dynamic_widgets()
